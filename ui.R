@@ -7,7 +7,7 @@ sidebar <- dashboardSidebar(
     menuItem("Home", tabName="home", icon=icon("house")),#home
     menuItem("Members", tabName="members", icon=icon("people-group")),#members
     menuItem("Research", tabName="research", icon=icon("flask-vial")),#research 
-    menuItem("Publications", tabName="pubs", icon=icon("newspaper"))#pubs
+    menuItem("Research Output", tabName="pubs", icon=icon("book-open-reader"))#pubs
   ) # End sidebar menu
 ) # End sidebar
 

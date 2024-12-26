@@ -6,91 +6,60 @@ library(shinydashboard)
 # Data handling
 library(DT)
 library(dplyr)
+library(tidyr)
+# Plotting
+library(ggplot2)
+library(plotly)
+library(viridis)
 
-pubs <- structure(list(#
-  Publication.Year = c(2024L, 2024L, 2023L, 2023L, 2023L, 2023L, 2022L, 2022L, 
-                       2022L, 2020L, 2019L, 2019L, 2019L, 2018L, 2018L, 2018L, 
-                       2018L, 2017L, 2017L, 2017L, 2017L, 2017L, 2016L, 2015L, 
-                       2014L, 2014L, 2014L, 2014L, 2014L, 2014L, 2014L, 2014L, 
-                       2013L, 2013L, 2013L, 2013L, 2013L, 2012L, 2010L), 
-  Document.Title = c("Polyester nanoparticles delivering chemotherapeutics: Learning from the past and looking to the future to enhance their clinical impact in tumor therapy", "Tribological behavior of shape-specific microplate-enriched synovial fluids on a linear two-axis tribometer", "Nanomedicines to treat rare neurological disorders: The case of Krabbe disease", "Machine learning instructed microfluidic synthesis of curcumin-loaded liposomes", "Assessing Differential Particle Deformability under Microfluidic Flow Conditions", "Boosting the Potential of Chemotherapy in Advanced Breast Cancer Lung Metastasis via Micro-Combinatorial Hydrogel Particles", "Shape-specific microfabricated particles for biomedical applications: a review", "Size effects of discoidal PLGA nanoconstructs in Pickering emulsion stabilization", "Preparation of anisotropic multiscale micro-hydrogels via two-photon continuous flow lithography", "Particle Surfaces to Study Macrophage Adherence, Migration, and Clearance", "Nanoparticle administration method in cell culture alters particle-cell interaction", "A tissue chamber chip for assessing nanoparticle mobility in the extravascular space", "Nanoparticle behaviour in complex media: Methods for characterizing physicochemical properties, evaluating protein corona formation, and implications for biological studies", "Beyond Global Charge: Role of Amine Bulkiness and Protein Fingerprint on Nanoparticle–Cell Interaction", "A rational and iterative process for targeted nanoparticle design and validation", "Nanoparticle–Cell Interaction: A Cell Mechanics Perspective", "Taylor Dispersion of Inorganic Nanoparticles and Comparison to Dynamic Light Scattering and Transmission Electron Microscopy", "Form Follows Function: Nanoparticle Shape and Its Implications for Nanomedicine", "Cellular Shuttles: Monocytes/Macrophages Exhibit Transendothelial Transport of Nanoparticles under Physiological Flow", "Lock-in thermography as a rapid and reproducible thermal characterization method for magnetic nanoparticles",
-"Dynamic and biocompatible thermo-responsive magnetic hydrogels that respond to an alternating magnetic field", "Bright X-ray and up-conversion nanophosphors annealed using encapsulated sintering agents for bioimaging applications", "What we talk about when we talk Nanoparticle-Cell interaction", "Nanoparticle colloidal stability in cell culture media and impact on cellular interactions", "Polymer-coated radioluminescent nanoparticles for quantitative imaging of drug delivery", "Multifunctional yolk-in-shell nanoparticles for pH-triggered drug release and imaging", "Iron-loaded magnetic nanocapsules for pH-triggered drug release and MRI imaging", "Accelerated iron oxide nanoparticle degradation mediated by polyester encapsulation within cellular spheroids", "Synthesis of brightly PEGylated luminescent magnetic upconversion nanophosphors for deep tissue and dual MRI imaging", "Nanotechnologies for noninvasive measurement of drug release", "Multilayered polymer-coated carbon nanotubes to deliver dasatinib", "Systemic administration of polymer-coated nano-graphene to deliver drugs to glioblastoma", "Effects of polymeric nanoparticle surface properties on interaction with brain tumor environment", "Multifunctional polymer-coated carbon nanotubes for safe drug delivery", "Monitoring pH-triggered drug release from radioluminescent nanocapsules with X-ray excited optical luminescence", "Graphene coatings for enhanced hemo-compatibility of nitinol stents", "Graphene coatings for biomedical implants.", "Magnetic and optical properties of multifunctional core-shell radioluminescence nanoparticles", "Biomedical applications of hydroxyapatite nanoparticles"), 
-  Authors = c("Longobardi G., Moore T.L., Conte C., Ungaro F., Satchi-Fainaro R., Quaglia F.",
-"Fragassi A., Greco A., Di Francesco M., Ceseracciu L., Ammar A.A., Dvir I., Moore T.L., Kasem H., Decuzzi P.",
-"Moore T.L., Pannuzzo G., Costabile G., Palange A.L., Spanò R., Ferreira M., Graziano A.C.E., Decuzzi P., Cardile V.",
-"Di Francesco V., Boso D.P., Moore T.L., Schrefler B.A., Decuzzi P.",
-"Miali M.E., Chien W., Moore T.L., Felici A., Oneto M. Fedosov D. Decuzzi P.",
-"Palange A.L., Di Mascolo D., Ferreira M., Gawne P.J., Spanò R., Felici A., Bono L., Moore T.L., Salerno M., Armirotti A., Decuzzi P.",
-"Moore T.L., Cook A.B., Bellotti E., Palomba R., Manghnani P., Spano R., Brahmachari S., Di Francesco M., Palange A.L., Di Mascolo D., Decuzzi P.",
-"Cook A.B., Schlich M., Manghnani P.N., Moore T.L., Decuzzi P., Palange A.L.",
-"Manghnani P.N., Di Francesco V., Panella La Capria C., Schlich M., Miali M.E., Moore T.L., Zunino A., Duocastella M., Decuzzi P.",
-"Septiadi D., Lee A., Spuch-Calvar M., Moore T.L., Spiaggia G., Abdussalam W., Rodriguez-Lorenzo L., Taladriz-Blanco P., Rothen-Rutishauser B., Petri-Fink A.",
-"Moore T.L., Urban D.A., Rodriguez-Lorenzo L., Milosevic A., Crippa F., Spuch-Calvar M., Balog S., Rothen-Rutishauser B., Lattuada M., Petri-Fink A.",
-"Lusi V., Moore T.L., Laurino F., Coclite A., Perreira R., Ferreira M., Rizzuti I., Palomba R., Zunino P., Duocastella M., Mizrahy S., Peer D., Decuzzi P.",
-"Fong W.-K., Moore T.L., Balog S., Vanhecke D., Rodriguez-Lorenzo L., Rothen-Rutishauser B., Lattuada M., Petri-Fink A.",
-"Burnand D., Milosevic A., Balog S., Spuch-Calvar M., Rothen-Rutishauser B., Dengjel J., Kinnear C., Moore T.L., Petri-Fink A.",
-"Rodriguez-Lorenzo L., Rafiee S.D., Reis C., Milosevic A., Moore T.L., Balog S., Rothen-Rutishauser B., Ruegg C., Petri-Fink A.",
-"Septiadi D., Crippa F., Moore T.L., Rothen-Rutishauser B., Petri-Fink A.",
-"Urban D.A., Milosevic A.M., Bossert D., Crippa F., Moore T.L., Geers C., Balog S., Rothen-Rutishauser B., Petri-Fink A.",
-"Kinnear C., Moore T.L., Rodriguez-Lorenzo L., Rothen-Rutishauser B., Petri-Fink A.",
-"Moore T.L., Hauser D., Gruber T., Rothen-Rutishauser B., Lattuada M., Petri-Fink A., Lyck R.",
-"Lemal P., Geers C., Monnier C.A., Crippa F., Daum L., Urban D.A., Rothen-Rutishauser B., Bonmarin M., Petri-Fink A., Moore T.L.",
-"Crippa F., Moore T.L., Mortato M., Geers C., Haeni L., Hirt A.M., Rothen-Rutishauser B., Petri-Fink A.",
-"Chen H., Wang F., Moore T.L., Qi B., Sulejmanovic D., Hwu S.-J., Mefford O.T., Alexis F., Anker J.N.",
-"Balog S., Moore T., Rothen-Rutishauser B., Petri-Fink A.", "Moore T.L., Rodriguez-Lorenzo L., Hirsch V., Balog S., Urban D., Jud C., Rothen-Rutishauser B., Lattuada M., Petri-Fink A.",
-"Moore T.L., Wang F., Chen H., Grimes S.W., Anker J.N., Alexis F.",
-"Chen H., Qi B., Moore T., Wang F., Colvin D.C., Sanjeewa L.D., Gore J.C., Hwu S.-J., Mefford O.T., Alexis F., Anker J.N.",
-"Chen H., Sulejmanovic D., Moore T., Colvin D.C., Qi B., Mefford O.T., Gore J.C., Alexis F., Hwu S.-J., Anker J.N.",
-"Mattix B., Olsen T.R., Moore T., Casco M., Simionescu D., Visconti R.P., Alexis F.",
-"Chen H., Qi B., Moore T., Colvin D.C., Crawford T., Gore J.C., Alexis F., Mefford O.T., Anker J.N.",
-"Moore T., Chen H., Morrison R., Wang F., Anker J.N., Alexis F.",
-"Moore T.L., Grimes S.W., Lewis R.L., Alexis F.", "Moore T.L., Podilakrishna R., Rao A., Alexis F.",
-"Mattix B., Moore T.L., Uvarov O., Pollard S., O’Donnell L., Park K., Horne D., Dhulekar J., Reese L., Nguyen D., Kraveka J., Burg K., Alexis F.",
-"Moore T.L., Pitzer J.E., Podila R., Wang X., Lewis R.L., Grimes S.W., Wilson J.R., Skjervold E., Brown J.M., Rao A., Alexis F.",
-"Chen H., Moore T., Qi B., Colvin D.C., Jelen E.K., Hitchcock D.A., He J., Mefford O.T., Gore J.C., Alexis F., Anker J.N.",
-"Podila R., Moore T., Alexis F., Rao A.M.", "Podila R., Moore T., Alexis F., Rao A.",
-"Chen H., Colvin D.C., Qi B., Moore T., He J., Mefford O.T., Alexis F., Gore J.C., Anker J.N.",
-"Loo S.C.J., Moore T., Banik B., Alexis F."), Journal.Title = c("WIREs Nanomedicine and Nanobiotechnology",
-"Friction", "Advanced Drug Delivery Review", "Biomedical Microdevices",
-"ACS Biomaterials Science & Engineering", "Advanced Science",
-"Drug Delivery and Translational Research", "Journal of Polymer Science",
-"Journal of Colloid and Interface Science", "Advanced Functional Materials",
-"Scientific Reports", "Biomedical Microdevices", "NanoScience and Technology",
-"Small", "Colloids and Surfaces B: Biointerfaces", "Advanced Materials",
-"Colloids and Interface Science Communications", "Chemical Reviews",
-"ACS Applied Materials and Interfaces", "Journal of Magnetism and Magnetic Materials",
-"Journal of Magnetism and Magnetic Materials", "Journal of Materials Chemistry B",
-"Chimia", "Chemical Society Reviews", "Advanced Functional Materials",
-"Small", "Chemistry of Materials", "Advanced Functional Materials",
-"Small", "Molecular Pharmaceutics", "Molecular Pharmaceutics",
-"Particle and Particle Systems Characterization", "Nano LIFE",
-"Particle and Particle Systems Characterization", "ACS Nano",
-"RSC Advances", "Journal of visualized experiments : JoVE", "Journal of Materials Chemistry",
-"Current Pharmaceutical Biotechnology"), DOI = c("10.1002/wnan.1990",
-"10.1007/s40544-023-0794-y", "10.1016/j.addr.2023.115132", "10.1007/s10544-023-00671-1",
-"10.1021/acsbiomaterials.3c00120", "10.1002/advs.202370056",
-"10.1007/s13346-022-01143-4", "10.1002/pol.20210748", "10.1016/j.jcis.2021.09.094",
-"10.1002/adfm.202002630", "10.1038/s41598-018-36954-4", "10.1007/s10544-019-0398-5",
-"", "10.1002/smll.201802088", "10.1016/j.colsurfb.2018.07.066",
-"10.1002/adma.201704463", "10.1016/j.colcom.2017.12.001", "10.1021/acs.chemrev.7b00194",
-"10.1021/acsami.7b03479", "10.1016/j.jmmm.2016.11.012", "10.1016/j.jmmm.2016.11.023",
-"10.1039/C7TB01289F", "", "10.1039/C4CS00487F ", "10.1002/adfm.201400949",
-"10.1002/smll.201303769", "10.1021/cm404168a", "10.1002/adfm.201301736",
-"10.1002/smll.201300828", "10.1021/mp400419k", "10.1021/mp400448w",
-"10.1002/ppsc.201300379", "10.1142/S1793984413430034", "10.1002/ppsc.201200145",
-"10.1021/nn304369m", "10.1039/C2RA23073A", "10.3791/50276", "10.1039/C2JM15444G",
-"10.2174/138920110791233343"), 
-  first_author = c(0L, 0L, 1L, 1L, 0L, 0L, 1L, 0L, 0L, 0L, 1L, 0L, 0L, 0L, 0L,
-                   1L, 0L, 0L, 1L, 0L, 0L, 0L, 0L, 1L, 1L, 0L, 0L, 0L, 0L, 1L,
-                   1L, 1L, 1L, 1L, 1L, 0L, 0L, 0L, 0L), 
-  corr_auth = c(0L, 0L, 1L, 0L, 0L, 0L, 1L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 0L, 
-                0L, 0L, 0L, 0L, 1L, 0L, 0L, 0L, 1L, 0L, 0L, 0L, 0L, 0L, 0L, 
-                0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L), 
-  keywords = c("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
-               "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", 
-               "", "", 
-               "nanoparticle; drug delivery; surface charge; uptake; biodistribution",
-"", "pH-triggered drug release; release monitoring; radioluminescent nanocapsules; theranostics",
-"", "", "", "Calcium-phosphate; bio-imaging; drug delivery; gene-delivery; inorganic nanoparticles; particulate systems"
-)), 
-  row.names = c(NA, 39L), class = "data.frame")
+# Set default browser
+options(browser='firefox')
+
+# Functions
+trimws_df <- function(x, ...){
+  x[] <- lapply(x, trimws, ...)
+  x
+}
+
+
+# Relevant data
+cites <- read.csv("www/assets/scopus_CitationOverview.csv")
+pubs <- read.csv("www/assets/scopusPubs.csv")
+
+# Merge specific columns from `pubs` to `cites`
+cites <- merge(cites, 
+  subset(pubs, select=c(Title, first_author, corr_auth, 
+                        Document.Type)), by="Title")
+
+
+## Clean data
+### Drop all rows where only NA
+pubs <- pubs[rowSums(is.na(pubs)) != ncol(pubs), ]
+### Put in order by year
+pubs <- pubs[order(pubs$Year, decreasing=TRUE),]
+pubs <- pubs[which(pubs$Document.Type != "Erratum"),]
+### Create combined "page" column
+pubs$Page <- ifelse(is.na(pubs$Page.start) | pubs$Page.start == "", 
+                    pubs$Art..No., pubs$Page.start)
+
+# Citation conversion
+#cites <- pivot_longer(cites,
+#  cols=-c(Title, Publication.Year, Source.title, first_author, 
+#          corr_auth, Document.Type))
+#names(cites)[names(cites) == 'name'] <- 'year'
+#names(cites)[names(cites) == 'value'] <- 'citations'
+#cites$year <- gsub("X","", cites$year)
+#cites$year <- as.numeric(cites$year)
+
+# Publications per year
+#names(pub_yr)[names(pub_yr) == 'Publication.Year'] <- 'year'
+#names(pub_yr)[names(pub_yr) == 'n'] <- 'no_pubs'
+
+
+# Summary of citation data
+#summ_cites <- cites |> group_by(year) |>
+#  summarize(
+#    sum_cites = sum(citations)
+#  )
+#summ_cites <- summ_cites[which(summ_cites$year >= 2010),]
+#summ_cites <- merge(summ_cites, pub_yr, by="year")

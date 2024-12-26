@@ -3,8 +3,8 @@ membersPage <- tabItem(tabName="members",
     tabPanel("Principal Investigator", icon=icon("user"),
       h1("Thomas L. Moore, PhD"),
       fluidRow(
-        column(8, 
-          p("Dr. Moore completed his Bachelor’s studies in Bioengineering at 
+        column(9, 
+          h4("Dr. Moore completed his Bachelor’s studies in Bioengineering at 
             Clemson University (Clemson, SC, USA) with a focus on 
             biomaterials, and continued in the Bioengineering Department at 
             Clemson in the Nanomedicine lab of Prof. Frank Alexis. After 
@@ -28,25 +28,40 @@ membersPage <- tabItem(tabName="members",
             nanoparticles to solve problems in the fields of nanomedicine, 
             drug delivery and bioengineering.")
         ), # End column
-        column(4,
-          img(src="assets/headshot.JPG", width="85%", align="center") #PI photo
+        column(3,
+          img(src="assets/headshot.JPG", width="95%", align="center") #PI photo
         ) # End column
-      ) # End fluidRow
+      ), # End fluidRow
+			fluidRow(
+				column(3, 
+					
+				) # End column
+			) # End fluidRow
     ), # End PI tabPanel
     tabPanel("Current Members", icon=icon("users-line"),
-      h1("Current Lab Members")
+      h1("Current Lab Members"),
+			# SIMONE MISTO -----------
+			h2("Simone Misto"),
+			fluidRow(
+				column(3, 
+					img(src="assets/smisto2.png", width="85%", align="center") # Simone photo
+				), # End column
+				column(9,
+					h4("Simone is a current PhD student in the nanoHTFS lab. ")
+				) # End column
+			) # End fluidRow
     ), # End Members tabPanel
     tabPanel("Lab Alumni", icon=icon("user-graduate"),
       h1("Lab Alumni"),
       h2("Undergraduate Students"),
       h3("Claudia Cardarelli"),
-      strong("Fall 2024"),br(),
-      em("Injectable Hydrogels for the Controlled Release of a New Hydrophilic Drug"),
+      h4(strong("Fall 2024")),
+      h4("Injectable Hydrogels for the Controlled Release of a New Hydrophilic Drug"),
       hr(),
       # Emanuele Picciuti
       h3("Emanuele Picciuti"),
-      strong("Spring 2024"),br(),
-      em("The Development of Polymeric Nanoparticles via an Automated Microfluidic Method for the Delivery of Drugs to Solid Tumors")
+      h4(strong("Spring 2024")),
+      h4("The Development of Polymeric Nanoparticles via an Automated Microfluidic Method for the Delivery of Drugs to Solid Tumors")
     ) # End Alumni tabPanel
   ) # End navbarPage
 ) # End membersPage
