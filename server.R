@@ -55,10 +55,51 @@ output$pubTab <- DT::renderDataTable({
 
 # Publication plots ==========================================================
 ## Dynamic data frames
-
-# Publications
-tmp_pubs <- reactive({
+# Publication summary
+tmp_summ_pubs <- reactive({
   tmp <- pubs
+
+  # Document type
+  if (input$plot_docType == "All Publications"){#
+    tmp <- tmp
+  } else {#
+    tmp <- tmp[which(tmp$Document.Type == input$plot_docType),]
+  }
+
+  # First author?
+  if (input$plot_firstAuth == FALSE){#
+    tmp <- tmp
+  } else {
+    tmp <- tmp[which(tmp$first_author == 1),]
+  }
+
+  # Corresponding author?
+  if (input$plot_corrAuth == FALSE){#
+    tmp <- tmp
+  } else {
+    tmp <- tmp[which(tmp$corr_auth == 1),]
+  }
+
+
+  summ_tmp <- tmp |> group_by(Year, Document.Type) |>
+    count()
+
+  return(summ_tmp)
+})
+
+## Publications per year -----------------------------------------------------
+output$plot_pubYrs <- renderPlotly({
+  ggplotly(
+    ggplot(tmp_summ_pubs()[which(tmp_summ_pubs()$n > 0),], 
+           aes(Year, n, fill=Document.Type))+
+      geom_col(colour="#FAFAFA")+
+      scale_x_continuous(name = "Year")+
+      scale_y_continuous(name="No. new publications")+
+      scale_fill_viridis_d(option="H")+
+      theme(legend.position="none",
+            panel.background=element_rect(fill="#ecf0f5", colour="black"),
+            plot.background=element_rect(fill="#ecf0f5"))
+  )
 })
 
 # Citations
@@ -95,61 +136,14 @@ tmp_cites <- reactive({
   return(tmp)
 })
 
-# Publication summary
-tmp_summ_pubs <- reactive({
-  tmp <- pubs
-
-  # Document type
-  if (input$plot_docType == "All Publications"){#
-    tmp <- tmp
-  } else {#
-    tmp <- tmp[which(tmp$Document.Type == input$plot_docType),]
-  }
-
-  # First author?
-  if (input$plot_firstAuth == FALSE){#
-    tmp <- tmp
-  } else {
-    tmp <- tmp[which(tmp$first_author == 1),]
-  }
-
-  # Corresponding author?
-  if (input$plot_corrAuth == FALSE){#
-    tmp <- tmp
-  } else {
-    tmp <- tmp[which(tmp$corr_auth == 1),]
-  }
-
-
-  summ_tmp <- tmp |> group_by(Year, Document.Type) |>
-    count()
-
-  return(summ_tmp)
-})
-
-## Publications per year
-output$plot_pubYrs <- renderPlotly({
-  ggplotly(
-    ggplot(tmp_summ_pubs(), 
-           aes(Year, n, fill=Document.Type))+
-      geom_col(colour="#FAFAFA")+
-      scale_x_continuous(name = "Year")+
-      scale_y_continuous(name="No. publications")+
-      scale_fill_viridis_d(option="H")+
-      theme(legend.position="none",
-            panel.background=element_rect(fill="#ecf0f5", colour="black"),
-            plot.background=element_rect(fill="#ecf0f5"))
-  )
-})
-
-## Citations per year
+## Citations per year --------------------------------------------------------
 output$plot_citeYrs <- renderPlotly({
   ggplotly(
-    ggplot(tmp_cites(), 
+    ggplot(tmp_cites()[which(tmp_cites()$citations > 0),], 
         aes(year, citations, fill=Title))+
       geom_col()+
       scale_x_continuous(name = "Year")+
-      scale_y_continuous(name="No. citations per year")+
+      scale_y_continuous(name="No. new citations per year")+
       scale_fill_viridis_d()+
       theme(legend.position="none",
             panel.background=element_rect(fill="#ecf0f5", colour="black"),
@@ -157,5 +151,22 @@ output$plot_citeYrs <- renderPlotly({
   )
 })
 
+### Network plot
+output$plot_network <- renderPlotly({
+  ggplotly(
+    ggplot(ggnet, 
+        aes(x = x, y = y, xend = xend, yend = yend))+
+      geom_edges(color = "grey50", alpha=I(0.5))+
+      geom_nodes(aes(text=Authors, size=degree, fill=institute), 
+                 shape=21)+
+      ggtitle("Publication network")+
+      scale_fill_viridis_d(option="H")+
+      scale_size(range = c(3, 6))+
+      theme_blank()+
+      theme(legend.position="none",
+            panel.background=element_rect(fill="#ecf0f5", colour="black"),
+            plot.background=element_rect(fill="#ecf0f5"))
+  )
+})
 
 } # End server

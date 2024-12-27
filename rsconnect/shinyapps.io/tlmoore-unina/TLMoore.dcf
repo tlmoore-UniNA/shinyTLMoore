@@ -1,0 +1,10 @@
+name: TLMoore
+title:
+username: tlmoore-unina
+account: tlmoore-unina
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13642563
+bundleId: 9572645
+url: https://tlmoore-unina.shinyapps.io/TLMoore/
+version: 1

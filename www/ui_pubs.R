@@ -55,7 +55,13 @@ pubPage <- tabItem(tabName="pubs",
         column(8,
           plotlyOutput("plot_citeYrs")
         )
-      ) # End fluidRow
+      ), # End fluidRow
+      br(), br(),
+      fluidRow(
+        column(8,
+          plotlyOutput("plot_network")
+        )
+      )
     ) # End tabPanel 
   ) # End navbarPage
 ) # End tabItem
