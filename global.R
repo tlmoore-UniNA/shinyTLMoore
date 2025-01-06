@@ -1,5 +1,6 @@
 # Libraries ------------------------------------------------------------------
 # runApp(launch.browser = FALSE)
+# rsconnect::deployApp(appName="nanoHTFS")
 ## For web interface
 library(shiny)
 library(shinydashboard)
@@ -8,12 +9,18 @@ library(shinydashboard)
 library(DT)
 library(dplyr)
 library(tidyr)
+# Text processing
+library(tm)
+library(SnowballC)
+library(stringr)
+#library(wordcloud)
 # Plotting
 library(ggnetwork)
 library(ggplot2)
 library(igraph)
 library(plotly)
 library(viridis)
+library(wordcloud2)
 
 # Set default browser
 options(browser='firefox')

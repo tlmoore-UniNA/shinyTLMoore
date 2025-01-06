@@ -1,10 +1,10 @@
-name: TLMoore
+name: nanoHTFS
 title:
 username: tlmoore-unina
 account: tlmoore-unina
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 13642563
-bundleId: 9575933
-url: https://tlmoore-unina.shinyapps.io/TLMoore/
+appId: 13665690
+bundleId: 9608526
+url: https://tlmoore-unina.shinyapps.io/nanoHTFS/
 version: 1

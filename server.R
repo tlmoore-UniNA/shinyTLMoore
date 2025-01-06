@@ -143,7 +143,7 @@ output$plot_citeYrs <- renderPlotly({
         aes(year, citations, fill=Title))+
       geom_col()+
       scale_x_continuous(name = "Year")+
-      scale_y_continuous(name="No. new citations per year")+
+      scale_y_continuous(name="No. new citations")+
       scale_fill_viridis_d()+
       theme(legend.position="none",
             panel.background=element_rect(fill="#ecf0f5", colour="black"),
@@ -151,7 +151,24 @@ output$plot_citeYrs <- renderPlotly({
   )
 })
 
-### Network plot
+## Pie chart -----------------------------------------------------------------
+output$plot_piePubs <- renderPlotly({
+
+  clrs <- viridis_pal(option = "H")(4)
+
+  df <- pubs |> group_by(Document.Type) |>
+    count()
+
+  plot_ly(type='pie', labels=df$Document.Type, values=df$n, 
+          textinfo='label+percent',
+          insidetextorientation='radial',
+          marker = list(colors=clrs)) |> 
+    layout(showlegend = FALSE,
+           paper_bgcolor='#ecf0f5',
+           plot_bgcolor='#ecf0f5')
+})
+
+## Network plot -------------------------------------------------------------- 
 output$plot_network <- renderPlotly({
   ggplotly(
     ggplot(ggnet, 
@@ -159,7 +176,7 @@ output$plot_network <- renderPlotly({
       geom_edges(color = "grey50", alpha=I(0.5))+
       geom_nodes(aes(text=Authors, size=degree, fill=institute), 
                  shape=21)+
-      ggtitle("Publication network")+
+#      ggtitle("Publication network")+
       scale_fill_viridis_d(option="H")+
       scale_size(range = c(3, 6))+
       theme_blank()+
@@ -168,5 +185,92 @@ output$plot_network <- renderPlotly({
             plot.background=element_rect(fill="#ecf0f5"))
   )
 })
+
+## Publications wordcloud ----------------------------------------------------
+tmp_dtm <- reactive({
+  
+  tmp <- pubs
+
+  # Document type
+  if (input$wc_docType == "All Publications"){#
+    tmp <- tmp
+  } else {#
+    tmp <- tmp[which(tmp$Document.Type == input$wc_docType),]
+  }
+
+  # First author?
+  if (input$wc_firstAuth == FALSE){#
+    tmp <- tmp
+  } else {
+    tmp <- tmp[which(tmp$first_author == 1),]
+  }
+
+  # Corresponding author?
+  if (input$wc_corrAuth == FALSE){#
+    tmp <- tmp
+  } else {
+    tmp <- tmp[which(tmp$corr_auth == 1),]
+  }
+
+  # Get text data for word cloud
+  absText <- VectorSource(tmp$abstract)
+  absText <- VCorpus(absText)
+  # Clean corpus
+  absText <- tm_map(absText, content_transformer(tolower))
+  absText <- tm_map(absText, PlainTextDocument)
+  absText <- tm_map(absText, removeNumbers)
+  absText <- tm_map(absText, removeWords, stopwords("english"))
+  absText <- tm_map(absText,removePunctuation)
+  absText <- tm_map(absText,stripWhitespace)
+
+  # Create document text matrix
+  dtm <- TermDocumentMatrix(absText)
+  dtm <- as.matrix(dtm)
+  sorted_dtm <- sort(rowSums(dtm), decreasing=TRUE)
+  df_wc <- data.frame(word=names(sorted_dtm), freq=sorted_dtm)
+  rownames(df_wc)=NULL
+
+  # Substitutions
+  df_wc$word <- str_replace(df_wc$word, "nps","nanoparticles")
+  df_wc$word <- str_replace(df_wc$word, "particles","particle")
+  df_wc$word <- str_replace(df_wc$word, "vitro","in vitro")
+  df_wc$word <- str_replace(df_wc$word, "in in vitro","in vitro")
+  df_wc$word <- str_replace(df_wc$word, "vivo","in vivo")
+  df_wc$word <- str_replace(df_wc$word, "in in vivo","in vivo")
+  df_wc$word <- str_replace(df_wc$word, "nanoparticles","nanoparticle")
+
+  # Summarize abstract words
+  df_wc <- df_wc |> group_by(word) |>
+    summarize(freq=sum(freq))
+
+  # Remove common words
+  df_wc <- df_wc[which(!df_wc == "also"),]
+  df_wc <- df_wc[which(!df_wc == "within"),]
+  df_wc <- df_wc[which(!df_wc == "however"),]
+
+  # NA omit
+  df_wc <- na.omit(df_wc)
+  df_wc <- df_wc[order(df_wc$freq, decreasing=TRUE),]
+  df_wc <- df_wc[1:100,]
+
+  return(df_wc)
+})
+
+output$plot_wordcloud <- renderWordcloud2({
+  df <- tmp_dtm()
+  p <- wordcloud2(df, color='random-dark', size=0.66,
+                  backgroundColor="#ecf0f5", fontFamily="Roboto")
+  return(p)
+#  wordcloud <- htmltools::html_print(p)
+#  return(wordcloud)
+})
+
+# CV Download ================================================================
+output$downloadCV <- downloadHandler(
+    filename = "CV_MooreT.pdf",
+    content = function(file) {
+      file.copy("www/assets/CV_MooreT.pdf", file)
+    }
+  )
 
 } # End server
