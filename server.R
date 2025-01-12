@@ -41,9 +41,10 @@ output$pubTab <- DT::renderDataTable({
   tmp <- subset(tmp, select=-c(first_author, corr_auth, Document.Type))
 
   table <- DT::datatable(tmp)
+  return(table)
 },
   options = list(
-    autoWidth=TRUE, pageLength=30,
+    autoWidth=TRUE, pageLength=5,
     columnDefs=list(list(width='200px', targets="_all")) # columnDefs
     ## To change multiple column widths 
     # columnDefs = list(#

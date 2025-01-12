@@ -61,8 +61,8 @@ researchPage <- tabItem(tabName="research",
           h4("Document Type"),
           choices=c(#
             list("All Publications"="All Publications"),
-            unique(pubs$Document.Type))
-          ) # End selectInput
+            unique(pubs$Document.Type)), 
+          selected=FALSE) # End selectInput
         ), # End column
         column(4,
           checkboxInput("firstAuth", "First/Co-first Author", value=FALSE),
@@ -71,7 +71,7 @@ researchPage <- tabItem(tabName="research",
         ) # End column
       ), # End fluidRow
         # Updated
-        p(strong("Last Updated:"), "18 December 2024 from Scopus"),
+        p(strong("Last Updated:"), "12 January 2025. Citation data from Scopus"),
         # Publications table
         DT::dataTableOutput("pubTab")
     ),
@@ -83,8 +83,8 @@ researchPage <- tabItem(tabName="research",
           h4("Document Type"),
           choices=c(#
             list("All Publications"="All Publications"),
-            unique(cites$Document.Type))
-          ) # End selectInput
+            unique(cites$Document.Type)),
+          selected=FALSE) # End selectInput
         ), # End column
         column(4,
           checkboxInput("plot_firstAuth", "First/Co-first Author",
